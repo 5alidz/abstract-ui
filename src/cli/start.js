@@ -69,8 +69,14 @@ module.exports = (_args) => {
   ]
 
   const r_files = [
-    {dest: `./${ROOT}/index.html`, template: './node_modules/abstract-ui/src/cli/templates-start/index.html'},
-    {dest: `./${ROOT}/main.js`, template: './node_modules/abstract-ui/src/cli/templates-start/main.js'}
+    {
+      dest: `./${ROOT}/index.html`,
+      template: './node_modules/abstract-ui/src/cli/templates-start/index.html'
+    },
+    {
+      dest: `./${ROOT}/main.js`,
+      template: './node_modules/abstract-ui/src/cli/templates-start/main.js'
+    }
   ]
 
   app.listen(PORT, async () => {
@@ -83,6 +89,6 @@ module.exports = (_args) => {
     `)
 
     r_dirs.forEach(dir => !fs.existsSync(dir) && mkdirp(dir))
-    r_files.forEach(file => !fs.existsSync(file) && copy_file(file.template, file.dest))
+    r_files.forEach(file => !fs.existsSync(file.dest) && copy_file(file.template, file.dest))
   })
 }

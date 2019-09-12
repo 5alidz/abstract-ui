@@ -58,8 +58,8 @@ module.exports = (/*args*/) => {
   const required = ['./docs', './docs/pages', './docs/static/docs', './__handlers__']
   required.forEach(dir => mkdir(dir))
 
-  const templates_ids = ['components', 'lib', 'pages']
-  templates_ids.forEach((dir) => {
+  const templates_dirs = ['components', 'lib', 'pages', 'static']
+  templates_dirs.forEach((dir) => {
     const dest_path = `./docs/${dir}`
     const template_path = `${temps_path}/${dir}`
     fs.readdir(template_path, (err, files) => {
@@ -72,6 +72,13 @@ module.exports = (/*args*/) => {
         }
       })
     })
+  })
+
+  const template_files = ['index.html', 'main.js']
+  template_files.forEach(file_name => {
+    const dest_path = `./docs/${file_name}`
+    const src_path = `./node_modules/abstract-ui/src/cli/templates-docs/${file_name}`
+    if(!fs.existsSync(dest_path)) {cp_file(src_path, dest_path)}
   })
 
   fs.readdir('./handlers', {}, (err, files) => {
