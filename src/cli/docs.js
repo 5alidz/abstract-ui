@@ -15,6 +15,7 @@ const generate_json = (prop_types_path, on_complete) => {
     files.forEach((file, index) => {
       const name = file.split('.')[0]
       const prop_types = require(path.resolve(`${prop_types_path}/${file}`))
+      if(!fs.existsSync('./docs/static/docs')) mkdir('./docs/static/docs')
       fs.writeFile(
         `./docs/static/docs/${name}.json`,
         JSON.stringify(prop_types, null, 2),
