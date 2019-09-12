@@ -1,6 +1,5 @@
 import render from 'abstract-ui/render.js'
 import { table_children, table_props } from './table.js'
-import { default_theme } from '../lib/doc_themes.js'
 
 const section = ({ title, inner }) => render`
   <div style='margin: 1rem 0; overflow-x: auto;'>
@@ -9,7 +8,7 @@ const section = ({ title, inner }) => render`
   </div>
 `
 
-const description = ({data}) => render`<InnerHtml>${data}</InnerHtml>`
+const description = ({data}) => render`<InnerHtml>${data || 'no description'}</InnerHtml>`
 
 const usage_container = `
   padding: 0 1rem;
@@ -17,14 +16,8 @@ const usage_container = `
   box-shadow: inset 0 0 10px rgba(0,0,0,.1);
   overflow-x: auto;
 `
-const usage = ({data}) => {return render`<pre style=${usage_container}>${data}</pre>`}
-
-const exp_usage = ({ data }) => render`
-  <Code
-    container=${usage_container}
-    theme=${default_theme}>
-    ${data}
-  <//>
+const usage = ({data}) => render`
+  <pre style=${usage_container}>${data || 'no usage info'}</pre>
 `
 
 export default function doc(data) {
@@ -33,10 +26,6 @@ export default function doc(data) {
       <${section}
         title='Description'
         inner=${render`<${description} data=${data.description}/>`}
-      />
-      <${section}
-        title='EXPERIMENTAL - usage'
-        inner=${render`<${exp_usage} data=${data.usage} />`}
       />
       <${section}
         title='Usage'
