@@ -1,4 +1,4 @@
-import render from 'nano_spa/render.js'
+import render from 'abstract-ui/render.js'
 import mount from 'abstract-ui/mount.js'
 
 function app() {
