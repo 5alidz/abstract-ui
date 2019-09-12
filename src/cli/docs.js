@@ -39,7 +39,7 @@ const generate_pages = (pages) => {
     const file_content = [
       "import render from 'abstract-ui/render.js'",
       "import page from '../components/page.js'",
-      "export default () => render`<${page} link='/static/${name}.json' name='${name}'/>`".replace(/\$\{name\}/g, name)
+      "export default () => render`<${page} link='/static/docs/${name}.json' name='${name}'/>`".replace(/\$\{name\}/g, name)
     ].join('\n')
 
     if(!fs.existsSync(page_path)) {
