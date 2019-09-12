@@ -60,15 +60,17 @@ export const create_handler = (handler_dir, {to_dom, placeholder, node}) => {
 }
 
 export const create_handler_validator = (promise, node) => {
-  (async () => {
-    try{
-      const [prop_types, validate_props] = await Promise.all([
-        promise,
-        import('../validate/index.js')
-      ])
-      validate_props.default(prop_types.default, node)
-    } catch(err) {
-      console.warn(`<${node.type} /> No Validation Found\n${err}`)
-    }
-  })()
+  if(process.env.NODE_env !== 'production') {
+    (async () => {
+      try{
+        const [prop_types, validate_props] = await Promise.all([
+          promise,
+          import('../validate/index.js')
+        ])
+        validate_props.default(prop_types.default, node)
+      } catch(err) {
+        console.warn(`<${node.type} /> No Validation Found\n${err}`)
+      }
+    })()
+  }
 }
