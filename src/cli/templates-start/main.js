@@ -7,4 +7,4 @@ function app() {
   `
 }
 
-mount(render`<${app} />`, document.getElementById('app'))
+mount(render`<${app} />`, document.getElementById('root'))
