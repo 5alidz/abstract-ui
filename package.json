@@ -6,7 +6,6 @@
   "author": "5alidz <kzack-dev@hotmail.com>",
   "license": "MIT",
   "description": "",
-  "publishConfig": {"registry": "https://npm.pkg.github.com/@5alidz"},
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watchAll"
