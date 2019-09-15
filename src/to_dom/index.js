@@ -54,42 +54,21 @@ function to_dom_component(node) {
 
 function to_dom_handler(node) {
   const placeholder = __placeholder(node.type)
-  const stock_handlers = [
-    'Box',
-    'Promise',
-    'Reducer',
-    'Router',
-    'Router::link',
-    'Router::head',
-    'State',
-    'InnerHtml',
-    'Side-effect'
-  ]
   const module_utils = { to_dom, placeholder, node }
 
-  const get_handler = (key) => import(
-    /* webpackChunkName: "[request]" */
-    `./handlers/${key}.js`
-  )
   const get_custom_handler = (key) => import(
     /* webpackChunkName: "[request]" */
     `../../../../handlers/${key}.js`
   )
 
-  if(stock_handlers.includes(node.type)) {
-    create_handler(get_handler, module_utils)
-    // validatation
-    if(process.env.NODE_ENV !== 'production') {
-      const promise = import(`./__handlers__/${node.type.replace(/::/g, '@')}.js`)
-      create_handler_validator(promise, node)
-    }
-  } else {
-    create_handler(get_custom_handler, module_utils)
-    // validatation
-    if(process.env.NODE_ENV !== 'production') {
-      const promise = import(`../../../../__handlers__/${node.type.replace(/::/g, '@')}.js`)
-      create_handler_validator(promise, node)
-    }
+  create_handler(get_custom_handler, module_utils)
+
+  // validatation
+  if(process.env.NODE_ENV !== 'production') {
+    const promise = import(
+      `../../../../__handlers__/${node.type.replace(/::/g, '@')}.js`
+    )
+    create_handler_validator(promise, node)
   }
   return placeholder.node
 }
