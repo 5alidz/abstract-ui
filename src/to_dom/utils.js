@@ -60,7 +60,7 @@ export const create_handler = (handler_dir, {to_dom, placeholder, node}) => {
 }
 
 export const create_handler_validator = (promise, node) => {
-  if(process.env.NODE_env !== 'production') {
+  if(process.env.NODE_ENV !== 'production') {
     (async () => {
       try{
         const [prop_types, validate_props] = await Promise.all([
