@@ -56,7 +56,13 @@ export const create_handler = (handler_dir, {to_dom, placeholder, node}) => {
   const resolve_name_to_dir = name => name.replace(/::/g, '@')
   return handler_dir(resolve_name_to_dir(node.type))
     .then(render_module(node, {to_dom, placeholder}))
-    .catch(placeholder.err)
+    .catch((err) => {
+      if(process.env.NODE_ENV !== 'production') {
+        placeholder.err(err)
+      } else {
+        console.error('failed to load handler\n', `${err}\n`, node)
+      }
+    })
 }
 
 export const create_handler_validator = (promise, node) => {
