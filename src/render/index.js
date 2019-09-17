@@ -7,7 +7,7 @@ import {
 } from './utils.js'
 
 function handle_custom_element(_node) {
-  const rendered = _node.type.call(_node, _node.props)
+  const rendered = _node.type.call(undefined, _node.props)
   const new_node =  typeof rendered === 'function' ? rendered() : rendered
 
   if(typeof new_node !== 'object') {
