@@ -1,4 +1,4 @@
-const to_dom = require('../to_dom.js').default
+const to_dom = require('../src/to_dom/index.js').default
 const render = require('../render.js').default
 
 test('expecting children but the child is undefined', () => {
