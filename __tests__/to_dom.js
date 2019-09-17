@@ -1,6 +1,34 @@
 const to_dom = require('../src/to_dom/index.js').default
 const render = require('../render.js').default
 
+test('fragments renders recursevly', () => {
+  const xd = 'xd'
+  const dom_node = document.createElement('div')
+  const another_div = document.createElement('div')
+  another_div.textContent = 'im a div inside a fragment inside a fragment'
+  dom_node.appendChild(document.createTextNode('hello, world'))
+  dom_node.appendChild(document.createTextNode('xd'))
+  dom_node.appendChild(document.createTextNode('im inside.'))
+  dom_node.appendChild(another_div)
+  dom_node.appendChild(document.createTextNode('fragment-ception.'))
+  expect(to_dom(render`
+    <div>
+      <>
+        hello, world
+        ${xd}
+        <>
+          im inside.
+          <div>im a div inside a fragment inside a fragment</div>
+          <>
+            fragment-ception.
+          </>
+        </>
+      </>
+    </div>
+  `)).toEqual(dom_node)
+})
+
+
 test('expecting children but the child is undefined', () => {
   const c = ({ child }) => render`<div>${child}</div>`
   const div = document.createElement('div')
