@@ -1,9 +1,7 @@
 export const typeOf = object => Object.prototype.toString.call(object)
   .replace(/[[\]]/g, '').split(' ')[1].toLowerCase()
 
-
 export const has = (o) => (prop) => Object.prototype.hasOwnProperty.call(o, prop)
-
 
 export const is_valid_type = (prop, type) => {
   const is_obj = typeOf(type) == 'object'
@@ -40,8 +38,6 @@ export const get_type = (type) => {
     }
   }
 }
-
-
 
 export const is_valid_prop_type = (o, with_key) => {
   // safe to assume that o is an object.

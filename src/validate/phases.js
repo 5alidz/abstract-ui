@@ -25,16 +25,30 @@ export const _prop_types = pt => {
 export const _children = (children, pt_children) => {
   const mode = pt_children && pt_children.mode || 'strict'
   const is = (_mode) => mode == _mode
+  function handle_child(child, index) {
+    if(!is_valid_type(child, pt_children[index].type)) {
+      return {
+        prop: `[${index}]`,
+        msg: `type error`,
+        payload: {
+          expected: get_type(pt_children[index].type),
+          recived: typeOf(child)
+        }
+      }
+    }
+  }
   return children.map((child, index) => {
     const v = pt_children && pt_children[index]
     if(is('strict')) {
       if(typeOf(v) != 'object') {
         return {msg: `child index ${index} has no validation.`}
       } else {
-        // validate child
+        if(!is_valid_type(child, pt_children[index].type)) {
+          return handle_child(child, index)
+        }
       }
     } else if(is('loose') && typeOf(v) == 'object') {
-      // validate the child.
+      return handle_child(child, index)
     }
   })
 }
