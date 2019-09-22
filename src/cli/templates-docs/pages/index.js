@@ -1,5 +1,5 @@
-import render from '../../node_modules/abstract-ui/render.js'
-import mount from '../../node_modules/abstract-ui/mount.js'
+import render from 'abstract-ui/render.js'
+import { mount } from 'abstract-ui/to_dom.js'
 
 export default () => {
   const get_handler = (e) => {

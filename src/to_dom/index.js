@@ -1,6 +1,7 @@
-import { is_type, typeOf } from '../shared/index.js'
+import { is_type } from '../shared/index.js'
 
 import {
+  typeOf,
   is_invalid,
   is_primitive,
   create_handler,

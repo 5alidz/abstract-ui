@@ -96,5 +96,4 @@ module.exports = (/*args*/) => {
   })
 
   generate_json('./__handlers__', generate_pages)
-  generate_json('./node_modules/abstract-ui/src/to_dom/__handlers__', generate_pages)
 }

@@ -1,5 +1,5 @@
 import render from 'abstract-ui/render.js'
-import mount from 'abstract-ui/mount.js'
+import { mount } from 'abstract-ui/to_dom.js'
 
 const app = () => {
   return render`

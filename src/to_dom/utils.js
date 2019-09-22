@@ -1,4 +1,5 @@
-import { typeOf } from '../shared/index.js'
+export const typeOf = object => Object.prototype.toString.call(object)
+  .replace(/[[\]]/g, '').split(' ')[1].toLowerCase()
 
 const events = (() => {
   const listeners = new Map()
