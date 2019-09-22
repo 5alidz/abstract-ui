@@ -33,7 +33,7 @@ const row_map = {
     inner: v => v
   },
   description: {
-    style: v => `color: ${v == 'none' ? '#aaa' : '#225c44'};font-size: .8rem;`,
+    style: v => `color: ${v == 'none' ? '#aaa' : '#225c44'};`,
     inner: v => v
   },
   type: {
