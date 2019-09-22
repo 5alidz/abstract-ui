@@ -1,29 +1,73 @@
-const reduce_payload = (payload) => Object.entries(payload)
-  .reduce((acc, [key, value]) => {
-    if(value) {
-      acc += `\t\t${key}:\t${value}\n`
-      return acc
-    } else {
-      acc += `\t\t${key}\n`
-      return acc
-    }
-  }, '')
-
-const handle_object = ({prop, msg, payload}) => {
-  if(!prop && !msg && !payload) { return }
-  let _prop
-  if(!prop && !payload) {
-    _prop = `\t${msg}\n`
-  } else {
-    _prop = `\t${prop}:\t${msg}\n`
+function create_message(type) {
+  let messages = {}
+  const message_header = `<${type} />\n`
+  const resolve = (obj) => {
+    return Object.entries(obj).reduce((accu, [key, value]) => {
+      accu += typeof value == 'undefined' ? `\t${key}\n` : `\t${key}:\t${value}\n`
+      return accu
+    }, '') + '\n'
   }
-  return `${_prop}${payload ? reduce_payload(payload) : ''}`
+  const add_line = (msg_type, obj) => {
+    if(!msg_type || !obj) { return }
+    if(typeof messages[msg_type] == 'string') {
+      messages[msg_type] += resolve(obj)
+    } else {
+      messages[msg_type] = message_header
+      messages[msg_type] += resolve(obj)
+    }
+  }
+  return { add_line, get_messages: () => messages }
 }
 
-export const logger = (node_name, errs, warns) => {
-  const head = `<${node_name} />\n`
-  const err = errs.map(handle_object).join('\n')
-  const warn = warns.map(handle_object).join('\n')
-  warns.length > 0 && console.warn(`${head}${warn}`)
-  errs.length > 0 && console.error(`${head}${err}`)
+function create_bus(prop_types, v_node) {
+  const { add_line, get_messages } = create_message(v_node.type)
+  const plugins = {}
+
+  const plugins_remap = (obj, id) => Object.entries(obj).reduce((accu, curr) => {
+    accu[`${id}.${curr[0]}`] = curr[1]
+    return accu
+  }, {})
+
+  const targets = {
+    ...plugins_remap(prop_types, 'validation'),
+    ...plugins_remap(v_node, 'node')
+  }
+
+  const exec_stack = (obj) => Object.entries(obj).forEach(([_target, stack]) => {
+    if(typeof targets[_target] == 'object') {
+      Object.entries(targets[_target]).forEach(([key, value]) => {
+        stack.forEach(([PLUGIN_NAME, callback]) => {
+          // execute plugin
+          callback(key, value, targets, PLUGIN_NAME)
+        })
+      })
+    }
+  })
+
+  return {
+    get_messages,
+    push: add_line,
+    register: ({ name, callback, target }) => {
+      if(typeof plugins[target] == 'undefined') {
+        plugins[target] = [[name, callback]]
+      } else if(Array.isArray(plugins[target])) {
+        plugins[target].push([name, callback])
+      } else {return}
+    },
+    run: () => !Object.keys(plugins).length == 0 && exec_stack(plugins)
+  }
+}
+
+export default {
+  create: (prop_types, v_node, plugins) => {
+    const bus = create_bus(prop_types, v_node)
+    plugins.forEach(plugin => plugin(bus))
+    bus.run()
+    return bus
+  },
+  log: (messages) => {
+    Object.entries(messages).forEach(([conType, msg]) => {
+      console[conType](msg)
+    })
+  },
 }
