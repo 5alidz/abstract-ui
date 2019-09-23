@@ -100,6 +100,7 @@ export default [
     name: 'type_of: wild-card-prop',
     target: 'node.props',
     callback: (prop_name, prop_value, targets, PLUGIN_NAME) => {
+      if(!targets['validation.props']) return // validation does not have a {props: {}
       const target = targets['validation.props'][prop_name]
       const wild_target = targets['validation.props']['*']
       const v_prop = prop_value

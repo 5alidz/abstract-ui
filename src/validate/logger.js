@@ -37,8 +37,12 @@ function create_bus(prop_types, v_node) {
     if(typeof targets[_target] == 'object') {
       Object.entries(targets[_target]).forEach(([key, value]) => {
         stack.forEach(([PLUGIN_NAME, callback]) => {
-          // execute plugin
-          callback(key, value, targets, PLUGIN_NAME)
+          try {
+            // execute plugin
+            callback(key, value, targets, PLUGIN_NAME)
+          } catch (err) {
+            console.warn(`<${v_node.type} />\n\tERROR while validating in __handlers__/${v_node.type}.js\n`, err)
+          }
         })
       })
     }
