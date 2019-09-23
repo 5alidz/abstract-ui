@@ -5,6 +5,41 @@ const msg_name = prop => prop.replace(':', ' ->')
 
 export default [
   (bus) => bus.register({
+    name: 'one_of: props',
+    target: 'validation.props',
+    callback: (prop_name, validation, targets, PLUGIN_NAME) => {
+      if(prop_name == '*') { return }
+      const target = targets['node.props'][prop_name]
+      const v_prop = validation[get_name(PLUGIN_NAME)]
+      if(typeOf(v_prop) == 'array' && !v_prop.includes(typeOf(target))) {
+        bus.push('error', {
+          [`[ ${msg_name(PLUGIN_NAME)} -> ${prop_name} ]`]: undefined,
+          '\texpected': v_prop.join(', '),
+          '\trecived': typeOf(target)
+        })
+      }
+    }
+  }),
+  (bus) => bus.register({
+    name: 'enum: props',
+    target: 'validation.props',
+    callback: (prop_name, validation, targets, PLUGIN_NAME) => {
+      if(prop_name == '*') { return }
+      const target = targets['node.props'][prop_name]
+      const v_prop = validation[get_name(PLUGIN_NAME)]
+      if(typeOf(v_prop) !== 'array') { return }
+      const reg_exs = v_prop.filter(val => typeOf(val) == 'regexp')
+      const vals = v_prop.filter(val => typeOf(val) !== 'regexp')
+      if(!vals.includes(target) && !reg_exs.some(r => r.test(target))) {
+        bus.push('error', {
+          [`[ ${msg_name(PLUGIN_NAME)} -> ${prop_name} ]`]: undefined,
+          '\texpected': v_prop.join(", "),
+          [`\trecived (${typeOf(target)})`]: target
+        })
+      }
+    }
+  }),
+  (bus) => bus.register({
     name: 'type_of: props',
     target: 'validation.props',
     callback: (prop_name, validation, targets, PLUGIN_NAME) => {
