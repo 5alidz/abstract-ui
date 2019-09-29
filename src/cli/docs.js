@@ -3,7 +3,6 @@ const path = require('path')
 const mkdir = require('mkdirp')
 const cp_file = require('cp-file')
 const promisify = require('util').promisify
-
 const { red, green, _log } = require('./logger.js').utils
 
 const read_dir = promisify(fs.readdir)
@@ -11,7 +10,6 @@ const write_file = promisify(fs.writeFile)
 
 const filter_dir = dir_name => dir_name.endsWith('.js')
 const getName = file_name => file_name.split('.js')[0]
-
 
 const read_directories = (...dirs) => Promise.all([...dirs.map(dir => read_dir(dir))])
 const handle_error = (err) => err ? _log(red('ERROR'), err) : undefined
