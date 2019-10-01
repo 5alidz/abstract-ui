@@ -4,6 +4,7 @@ import { mount } from 'abstract-ui/to_dom.js'
 const app = () => {
   return render`
     <div padding='1rem'>
+      // todo docs app.
     <//>
   `
 }
