@@ -20,7 +20,9 @@ const render_module = (node, {to_dom, placeholder}) => _module => {
   events.send(node, __handler_result__)
   if(typeof __handler_result__ == 'undefined') {
     // treat handler as a side effect
-    placeholder.node.parentNode.removeChild(placeholder.node)
+    if(placeholder.node.parentNode) {
+      placeholder.node.parentNode.removeChild(placeholder.node)
+    }
   } else {
     // handler return dom node
     placeholder.node.replaceWith(__handler_result__)
