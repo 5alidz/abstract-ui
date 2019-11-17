@@ -39,7 +39,7 @@ module.exports = _args => {
 
   app.use(hot_mw(compiler, { log: false }));
 
-  const r_dirs = [withRoot('handlers'), withRoot('__handlers__'), withRoot(ROOT), withRoot(ROOT, 'static')];
+  const r_dirs = [withRoot(ROOT), withRoot(ROOT, 'static')];
 
   const r_files = [
     {
