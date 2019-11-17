@@ -9,7 +9,7 @@ const babel_rules = {
   use: {
     loader: 'babel-loader',
     options: {
-      presets: [['@babel/preset-env', { modules: false, targets: { edge: '44' } }]],
+      presets: [['@babel/preset-env', { modules: false, targets: { edge: '44' }, useBuiltIns: 'usage', corejs: 3 }]],
       plugins: [
         '@babel/plugin-transform-runtime',
         '@babel/plugin-transform-template-literals',
@@ -38,8 +38,8 @@ const plugins_dev = root => [...plugins_common(root), new webpack.HotModuleRepla
 module.exports = ({ root, mode }) => ({
   entry:
     mode == 'production'
-      ? ['@babel/polyfill', path.resolve('.', `${root}/main.js`)]
-      : ['webpack-hot-middleware/client?reload=true', '@babel/polyfill', path.resolve('.', `${root}/main.js`)],
+      ? path.resolve('.', `${root}/main.js`)
+      : ['webpack-hot-middleware/client?reload=true', path.resolve('.', `${root}/main.js`)],
   output: {
     path: path.resolve('.', `dist-${root}`),
     filename: 'main.js',
