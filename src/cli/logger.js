@@ -17,15 +17,8 @@ const normal_blue = tx => chalk.blue.bold(tx);
 
 exports.utils = { red, green, yellow, normal_blue, blue, _log };
 
-// used by abstract build
 exports.log = (err, stats) => {
   clear();
-  // check for custom handlers dir [critical for compilation] used by import()
-  if (!fs.existsSync(path.resolve('.', 'handlers'))) {
-    _log(red('error'), 'handlers directory is required.');
-    return;
-  }
-  // check for fatal webpack errors. should not happend, EVER!
   if (err) {
     _log(red('error'), err.stack || err);
     if (err.details) {
@@ -59,6 +52,7 @@ exports.logger = () => {
       }
     },
     error: payload => {
+      console.log(payload);
       const _payload = strip_ansi(payload)
         .split('\n')
         .filter(m => m.startsWith('ERROR'));

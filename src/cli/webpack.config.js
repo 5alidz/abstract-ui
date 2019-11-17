@@ -9,9 +9,9 @@ const babel_rules = {
   use: {
     loader: 'babel-loader',
     options: {
-      presets: [['@babel/preset-env', { targets: { edge: '44' }, modules: false }]],
+      presets: [['@babel/preset-env', { modules: false }]],
       plugins: [
-        '@babel/plugin-transform-runtime',
+        ['@babel/plugin-transform-runtime', { corejs: 3 }],
         '@babel/plugin-transform-template-literals',
         '@babel/plugin-syntax-object-rest-spread',
         '@babel/plugin-syntax-dynamic-import',
