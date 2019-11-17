@@ -52,7 +52,6 @@ exports.logger = () => {
       }
     },
     error: payload => {
-      console.log(payload);
       const _payload = strip_ansi(payload)
         .split('\n')
         .filter(m => m.startsWith('ERROR'));
