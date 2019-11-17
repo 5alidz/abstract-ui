@@ -44,9 +44,5 @@ module.exports = ({ root, mode }) => ({
   },
   plugins: mode == 'production' ? plugins_common(root) : plugins_dev(root),
   module: { rules: [babel_rules] },
-  mode: mode,
-  resolve: {
-    symlinks: false,
-    modules: [path.resolve('node_modules')]
-  }
+  mode: mode
 });
