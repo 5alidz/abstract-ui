@@ -26,7 +26,11 @@ const babel_rules = {
 const plugins_common = root => [
   new CleanWebpackPlugin(),
   new HTMLwebpackPlugin({ template: path.resolve('.', root, 'index.html'), inject: false }),
-  new CopyPlugin([{ from: path.resolve('.', root, 'static'), to: 'static' }], { logLevel: 'silent' })
+  new CopyPlugin([{ from: path.resolve('.', root, 'static'), to: 'static' }], { logLevel: 'silent' }),
+  new webpack.ProvidePlugin({
+    'abstract.render': ['abstract-ui/abstract.js', 'render'],
+    'abstract.fragment': ['abstract-ui/abstract.js', 'fragment']
+  })
 ];
 
 const plugins_dev = root => [...plugins_common(root), new webpack.HotModuleReplacementPlugin()];
