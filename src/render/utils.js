@@ -6,7 +6,6 @@ export const minify_style = s =>
     .split('\n')
     .map(s => s.trim())
     .join('');
-export const flatten = arr => [].concat.apply([], arr);
 
 export const id = node_name => {
   const isHandler = typeOf(node_name) == 'string' && node_name == node_name.toLowerCase() && node_name.includes('_');

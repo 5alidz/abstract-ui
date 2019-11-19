@@ -1,8 +1,16 @@
-import { minify_style, flatten, id } from './utils.js';
+import { minify_style, id } from './utils.js';
+import { flatten } from '../shared/index.js';
+
+/**
+ * @typedef {object} JsxNode
+ * @property {string} type
+ * @property {object} props
+ * @property {(string|number|JsxNode)[]} children
+ * @property {Symbol} $type
+ */
 
 function handle_custom_element(_node) {
-  const rendered = _node.type.call(undefined, _node.props);
-  const new_node = typeof rendered === 'function' ? rendered() : rendered;
+  const new_node = _node.type.call(undefined, _node.props);
 
   if (typeof new_node !== 'object') {
     return;
@@ -10,17 +18,19 @@ function handle_custom_element(_node) {
     new_node.$type = id(new_node.type);
     return new_node;
   } else {
-    if (process.env.NODE_ENV != 'production') {
-      if (!new_node.children) {
-        const cause = `<${new_node[new_node.length - 1].type} />`;
-        console.warn(cause, 'you probably forgot a closing tag');
-      }
-    }
     return render(new_node.type, new_node.props, ...new_node.children.concat(_node.children));
   }
 }
 
+/**
+ * @param {string} type
+ * @param {object} props
+ * @param  {...(string|number|JsxNode)} children
+ */
 export default function render(type, props, ...children) {
+  /**
+   * @type {JsxNode}
+   */
   const node = {
     type,
     props: props || {},
