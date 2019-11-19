@@ -5,13 +5,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
 const babel_rules = {
+  exclude: /node_modules/,
   test: /\.js/,
   use: {
     loader: 'babel-loader',
     options: {
-      presets: [['@babel/preset-env', { modules: false, targets: { chrome: 70 } }]],
+      presets: [['@babel/preset-env', { modules: false, targets: { chrome: '77' } }]],
       plugins: [
-        '@babel/plugin-transform-runtime',
+        ['@babel/plugin-transform-runtime', { corejs: { version: 3, useESModules: true } }],
         '@babel/plugin-transform-template-literals',
         '@babel/plugin-syntax-object-rest-spread',
         '@babel/plugin-syntax-dynamic-import',
