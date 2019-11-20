@@ -10,9 +10,11 @@ const babel_rules = {
   use: {
     loader: 'babel-loader',
     options: {
-      presets: [['@babel/preset-env', { modules: false, targets: { chrome: '77' } }]],
+      presets: [
+        ['@babel/preset-env', { modules: false, targets: 'last 1 Chrome versions', useBuiltIns: 'usage', corejs: 3 }]
+      ],
       plugins: [
-        ['@babel/plugin-transform-runtime', { corejs: { version: 3, useESModules: true } }],
+        '@babel/plugin-transform-runtime',
         '@babel/plugin-transform-template-literals',
         '@babel/plugin-syntax-object-rest-spread',
         '@babel/plugin-syntax-dynamic-import',

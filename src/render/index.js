@@ -1,4 +1,4 @@
-import { minify_style, id } from './utils.js';
+import { minify_classes, minify_style, id } from './utils.js';
 import { flatten } from '../shared/index.js';
 
 /**
@@ -37,6 +37,8 @@ export default function render(type, props, ...children) {
     children: flatten(children),
     $type: id(type)
   };
-  if (node.props.style) node.props.style = minify_style(node.props.style);
+  if (node.props.style && node.props.style.includes('\n')) node.props.style = minify_style(node.props.style);
+  if (node.props.className && node.props.className.includes('\n'))
+    node.props.className = minify_classes(node.props.className);
   return typeof type === 'function' ? handle_custom_element(node) : node;
 }

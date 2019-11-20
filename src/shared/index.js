@@ -1,4 +1,6 @@
-export const flatten = arr => arr.flat(Infinity);
+import _flatten from 'lodash/flattenDeep';
+
+export const flatten = _flatten;
 
 export const typeOf = object =>
   Object.prototype.toString

@@ -1,8 +1,11 @@
 import { is_type, typeOf, flatten } from '../shared/index.js';
 import { is_invalid, is_primitive, is_undefined, is_empty_string, is_possible_event, is_attr_of } from './utils.js';
+
+const __DEV__ = process.env.NODE_ENV !== 'production';
 /**
  * @typedef {import('../render/index').JsxNode} JsxNode
  */
+
 /**
  * @param {object} props
  * @param {HTMLElement} element
@@ -15,7 +18,7 @@ function handle_props(props, element) {
     if (is_empty_string(value) || is_undefined(value)) {
       return;
     } else if (is_possible_event(key) && is_attr_of(key.toLowerCase(), element)) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (__DEV__) {
         if (key.toLowerCase() == key) {
           return console.warn(
             'usage of onclick is discouraged, for keeping your code consistent with camelCasing',

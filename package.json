@@ -8,8 +8,7 @@
   "description": "minimal abstraction for UI elements",
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watchAll",
-    "publish": "npm version patch && git push -u origin master"
+    "test:watch": "jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -43,6 +42,7 @@
     "cli-spinners": "^2.2.0",
     "connect-history-api-fallback": "^1.6.0",
     "copy-webpack-plugin": "^5.0.3",
+    "core-js": "3",
     "cp-file": "^7.0.0",
     "express": "^4.17.1",
     "html-webpack-plugin": "^3.2.0",
