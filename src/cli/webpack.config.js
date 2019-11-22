@@ -6,12 +6,13 @@ const webpack = require('webpack');
 
 const babel_rules = {
   exclude: /node_modules/,
-  test: /\.js/,
+  test: /\.(js|ts|tsx)$/,
   use: {
     loader: 'babel-loader',
     options: {
       presets: [
-        ['@babel/preset-env', { modules: false, targets: 'last 1 Chrome versions', useBuiltIns: 'usage', corejs: 3 }]
+        ['@babel/preset-env', { modules: false, targets: 'last 1 Chrome versions', useBuiltIns: 'usage', corejs: 3 }],
+        ['@babel/preset-typescript', { allowNamespaces: true }]
       ],
       plugins: [
         '@babel/plugin-transform-runtime',
@@ -51,5 +52,8 @@ module.exports = ({ root, mode }) => ({
   },
   plugins: mode == 'production' ? plugins_common(root) : plugins_dev(root),
   module: { rules: [babel_rules] },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
   mode: mode
 });
