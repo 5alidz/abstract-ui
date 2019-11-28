@@ -13,6 +13,7 @@ export const minify_classes = c =>
     .split('\n')
     .map(s => s.trim())
     .join(' ');
+
 export const id = node_name => {
   const isHandler = typeOf(node_name) == 'string' && node_name == node_name.toLowerCase() && node_name.includes('_');
   const isFrag = typeOf(node_name) == 'string' && node_name === '';
