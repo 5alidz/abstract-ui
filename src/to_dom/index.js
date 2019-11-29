@@ -34,6 +34,50 @@ function to_dom_child(child) {
   }
 }
 
+function handleAsyncComponent(node) {
+  const placeholderNode = document.createElement('div');
+  placeholderNode.innerHTML = '...';
+  // handle resolved node "merging" strategy
+  const validStrats = ['append', 'replace'];
+  const defaultStrat = validStrats[0];
+  const handleStrat = {
+    append: function(domNode) {
+      placeholderNode.appendChild(domNode);
+    },
+    replace: function(domNode) {
+      placeholderNode.replaceWith(domNode);
+    }
+  };
+  const strat = (() => {
+    if (node.props.append) {
+      return 'append';
+    } else if (node.props.replace) {
+      return 'replace';
+    } else {
+      return defaultStrat;
+    }
+  })();
+  // give back placeholder ref.
+  if (typeOf(node.props.ref) == 'function') {
+    node.props.ref(placeholderNode);
+  }
+  // handle async component rendering.
+  if (typeOf(node.type) == 'asyncfunction') {
+    const componentPromise = node.type(node.props);
+    componentPromise
+      .then(maybeComponent => {
+        const domNode = to_dom(maybeComponent);
+        // replace | append
+        placeholderNode.innerHTML = '';
+        handleStrat[strat](domNode);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  return placeholderNode;
+}
+
 /**
  *
  * @param {JsxNode} node
@@ -57,7 +101,7 @@ function to_dom(node) {
   } else if (is_type('COMPONENT')(node)) {
     return to_dom_component(node);
   } else if (is_type('HANDLER')(node)) {
-    return console.warn('Noop, handlers not implemented');
+    return handleAsyncComponent(node);
   } else {
     return undefined;
   }

@@ -1,5 +1,5 @@
-import { minify_classes, minify_style, id } from './utils.js';
-import { flatten } from '../shared/index.js';
+import { id } from './utils.js';
+import { flatten, typeOf } from '../shared/index.js';
 
 /**
  * @typedef {object} JsxNode
@@ -9,7 +9,7 @@ import { flatten } from '../shared/index.js';
  * @property {Symbol} $type
  */
 
-function handle_custom_element(_node) {
+function handleFunctionComponent(_node) {
   const new_node = _node.type.call(undefined, _node.props);
 
   if (typeof new_node !== 'object') {
@@ -37,8 +37,9 @@ export default function render(type, props, ...children) {
     children: flatten(children),
     $type: id(type)
   };
-  if (node.props.style && node.props.style.includes('\n')) node.props.style = minify_style(node.props.style);
-  if (node.props.className && node.props.className.includes('\n'))
-    node.props.className = minify_classes(node.props.className);
-  return typeof type === 'function' ? handle_custom_element(node) : node;
+  if (typeOf(type) == 'function') {
+    return handleFunctionComponent(node);
+  } else {
+    return node;
+  }
 }
