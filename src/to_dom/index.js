@@ -1,7 +1,8 @@
 import handleProps from './handleProps.js';
 import { is_invalid, is_primitive } from './utils.js';
-
 import { is_type, typeOf, flatten } from '../shared/index.js';
+
+const DEV = process.env.NODE_ENV !== 'production';
 
 /**
  * @typedef {import('../render/index').JsxNode} JsxNode
@@ -35,21 +36,33 @@ function to_dom_child(child) {
 }
 
 function handleAsyncComponent(node) {
-  const placeholderNode = document.createElement('div');
-  placeholderNode.innerHTML = '...';
+  // handle placeholder to render before promise resolves
+  const hasPlaceholder = typeOf(node.props.placeholder) !== 'undefined' && is_type('COMPONENT')(node.props.placeholder);
+
+  // create placeholder node.
+  const placeholderNode = hasPlaceholder ? to_dom(node.props.placeholder) : document.createElement('div');
+  // placeholder content in case there's none.
+  if (!hasPlaceholder) {
+    placeholderNode.innerHTML = '...';
+  }
   // handle resolved node "merging" strategy
-  const validStrats = ['append', 'replace'];
-  const defaultStrat = validStrats[0];
+  const validStrats = ['append', 'replace', 'manual'];
+  const defaultStrat = validStrats[1];
   const handleStrat = {
     append: function(domNode) {
       placeholderNode.appendChild(domNode);
     },
     replace: function(domNode) {
       placeholderNode.replaceWith(domNode);
+    },
+    manual: function(domNode) {
+      node.props.onResolve(domNode, placeholderNode);
     }
   };
   const strat = (() => {
-    if (node.props.append) {
+    if (typeOf(node.props.onResolve) == 'function') {
+      return 'manual';
+    } else if (node.props.append) {
       return 'append';
     } else if (node.props.replace) {
       return 'replace';
@@ -63,16 +76,29 @@ function handleAsyncComponent(node) {
   }
   // handle async component rendering.
   if (typeOf(node.type) == 'asyncfunction') {
+    // handle children special case
+    node.props.children = node.children;
     const componentPromise = node.type(node.props);
     componentPromise
       .then(maybeComponent => {
         const domNode = to_dom(maybeComponent);
         // replace | append
-        placeholderNode.innerHTML = '';
+        if (!hasPlaceholder) {
+          placeholderNode.innerHTML = '';
+        }
+        // execute merging strategy.
         handleStrat[strat](domNode);
       })
       .catch(error => {
-        console.log(error);
+        if (DEV) {
+          if (error && typeOf(node.props.onReject) !== 'function') {
+            console.warn(`un handled error at <${node.type.name} />`);
+            console.error(error);
+          }
+        }
+        if (typeOf(node.props.onReject) == 'function') {
+          node.props.onReject(error, placeholderNode);
+        }
       });
   }
   return placeholderNode;

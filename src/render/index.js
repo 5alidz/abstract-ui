@@ -10,6 +10,8 @@ import { flatten, typeOf } from '../shared/index.js';
  */
 
 function handleFunctionComponent(_node) {
+  // handle children special case
+  _node.props.children = _node.children;
   const new_node = _node.type.call(undefined, _node.props);
 
   if (typeof new_node !== 'object') {
@@ -18,7 +20,7 @@ function handleFunctionComponent(_node) {
     new_node.$type = id(new_node.type);
     return new_node;
   } else {
-    return render(new_node.type, new_node.props, ...new_node.children.concat(_node.children));
+    return render(new_node.type, new_node.props, ...new_node.children);
   }
 }
 
