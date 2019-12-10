@@ -17,3 +17,17 @@ export const types = Object.freeze({
 });
 
 export const is_type = type => node => node.$type == types[type];
+
+export const genId = (len = 0) => {
+  const createSingle = () =>
+    Math.random()
+      .toString(36)
+      .substr(2, 9);
+  let res = '';
+  for (let i = 0; i <= len; i++) {
+    res += btoa(createSingle());
+  }
+  return res;
+};
+
+export const refs = {};

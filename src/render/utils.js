@@ -28,3 +28,7 @@ export const id = node_name => {
     return types.COMPONENT;
   }
 };
+
+export function diff(jsxNode, domNode) {
+  console.log(domNode.type, jsxNode.type);
+}

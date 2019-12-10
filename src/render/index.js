@@ -1,18 +1,38 @@
-import { id } from './utils.js';
-import { flatten, typeOf } from '../shared/index.js';
+import { id, diff } from './utils.js';
+import { flatten, typeOf, genId, refs } from '../shared/index.js';
 
 /**
  * @typedef {object} JsxNode
  * @property {string} type
  * @property {object} props
  * @property {(string|number|JsxNode)[]} children
+ * @property {string} [ref] - optional
  * @property {Symbol} $type
  */
 
 function handleFunctionComponent(_node) {
   // handle children special case
+  const refId = genId(1);
+  refs[refId] = null;
   _node.props.children = _node.children;
-  const new_node = _node.type.call(undefined, _node.props);
+  const machine = _node.type.machine || {};
+  const states = machine.states || {};
+  let state;
+  let transition;
+  let utils;
+  if (machine.start) {
+    state = machine.start();
+    transition = transitionState => {
+      if (typeOf(states[transitionState]) == 'function') {
+        states[transitionState](state);
+        const componentAfterTransition = _node.type.call(utils, _node.props);
+        console.log(refs);
+        diff(componentAfterTransition, refs[refId]);
+      }
+    };
+    utils = { state, transition };
+  }
+  const new_node = _node.type.call(utils, _node.props);
 
   if (typeof new_node !== 'object') {
     return;
@@ -20,7 +40,7 @@ function handleFunctionComponent(_node) {
     new_node.$type = id(new_node.type);
     return new_node;
   } else {
-    return render(new_node.type, new_node.props, ...new_node.children);
+    return { ...render(new_node.type, new_node.props, ...new_node.children), ref: refId };
   }
 }
 

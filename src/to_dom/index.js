@@ -1,6 +1,6 @@
 import handleProps from './handleProps.js';
 import { is_invalid, is_primitive } from './utils.js';
-import { is_type, typeOf, flatten } from '../shared/index.js';
+import { is_type, typeOf, flatten, refs } from '../shared/index.js';
 
 const DEV = process.env.NODE_ENV !== 'production';
 
@@ -111,6 +111,9 @@ function handleAsyncComponent(node) {
 function to_dom_component(node) {
   let { type, props, children } = node;
   const element = document.createElement(type);
+  if (node.ref) {
+    refs[node.ref] = element;
+  }
   handleProps(props, element);
   handle_children(children, element);
   return element;
